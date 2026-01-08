@@ -1,0 +1,8 @@
+[project]
+name = "mcp-server"
+version = "0.1.0"
+description = "MCP Server for Training Coach AI"
+requires-python = ">=3.11"
+
+[tool.setuptools.packages.find]
+where = ["."]
