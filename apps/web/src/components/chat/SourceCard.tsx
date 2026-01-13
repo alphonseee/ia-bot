@@ -13,17 +13,10 @@ export function SourceCard({ citation }: SourceCardProps) {
       href={citation.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="inline-flex items-center gap-2 px-3 py-2 bg-[var(--bg-tertiary)] 
-                 border border-[var(--border-color)] rounded-lg hover:border-red-900/50 
-                 transition-colors text-sm group"
+      className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs bg-bg border border-border rounded-md hover:border-accent/50 transition-colors group"
     >
-      <span className="w-4 h-4 rounded bg-red-600/20 flex items-center justify-center text-xs text-red-500">
-        ↗
-      </span>
-      <span className="text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] truncate max-w-[200px]">
-        {citation.title || domain}
-      </span>
-      <span className="text-[var(--text-secondary)] opacity-50 text-xs hidden sm:inline">
+      <span className="text-text-muted group-hover:text-accent">↗</span>
+      <span className="text-text-muted group-hover:text-text truncate max-w-[150px]">
         {domain}
       </span>
     </a>

@@ -48,7 +48,7 @@ export function ChatContainer({ initialQuery }: ChatContainerProps) {
     setMessages((prev) => [...prev, userMessage, assistantMessage]);
     setIsLoading(true);
 
-    const cleanup = streamChatMessage(sessionId, content, {
+    streamChatMessage(sessionId, content, {
       onCitations: (citations: Citation[]) => {
         setMessages((prev) =>
           prev.map((msg) =>
@@ -92,20 +92,18 @@ export function ChatContainer({ initialQuery }: ChatContainerProps) {
         setIsLoading(false);
       },
     });
-
-    return cleanup;
   }, [sessionId, isLoading]);
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full max-w-3xl mx-auto">
       <MessageList messages={messages} />
-      <div className="p-4 border-t border-[var(--border-color)]">
+      <div className="p-4 border-t border-border">
         <ChatInput 
           onSend={handleSend} 
           disabled={isLoading || !sessionId} 
         />
-        <p className="text-xs text-[var(--text-secondary)] text-center mt-2">
-          IronCoach peut faire des erreurs. Vérifie les informations importantes.
+        <p className="text-xs text-text-muted text-center mt-2">
+          L&apos;IA peut se tromper. Vérifie les infos importantes.
         </p>
       </div>
     </div>

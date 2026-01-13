@@ -1,4 +1,3 @@
-/** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
@@ -8,8 +7,15 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['var(--font-geist-sans)', 'Inter', 'system-ui', 'sans-serif'],
-        mono: ['var(--font-geist-mono)', 'JetBrains Mono', 'monospace'],
+        sans: ['var(--font-main)', 'system-ui', 'sans-serif'],
+      },
+      colors: {
+        bg: 'var(--bg)',
+        'bg-alt': 'var(--bg-alt)',
+        text: 'var(--text)',
+        'text-muted': 'var(--text-muted)',
+        accent: 'var(--accent)',
+        border: 'var(--border)',
       },
     },
   },

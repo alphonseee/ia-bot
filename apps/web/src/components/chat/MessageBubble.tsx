@@ -12,10 +12,10 @@ export function MessageBubble({ message }: MessageBubbleProps) {
   return (
     <div className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}>
       <div
-        className={`max-w-[85%] md:max-w-[75%] ${
+        className={`max-w-[85%] md:max-w-[70%] ${
           isUser
-            ? 'bg-red-600 text-white rounded-2xl rounded-br-md'
-            : 'bg-[var(--bg-tertiary)] border border-[var(--border-color)] rounded-2xl rounded-bl-md'
+            ? 'bg-accent text-white rounded-2xl rounded-br-sm'
+            : 'bg-bg-alt border border-border rounded-2xl rounded-bl-sm'
         } px-4 py-3`}
       >
         {message.isStreaming && !message.content ? (
@@ -31,8 +31,8 @@ export function MessageBubble({ message }: MessageBubbleProps) {
             </div>
             
             {!isUser && message.citations && message.citations.length > 0 && (
-              <div className="mt-3 pt-3 border-t border-[var(--border-color)]">
-                <p className="text-xs text-[var(--text-secondary)] mb-2">Sources :</p>
+              <div className="mt-3 pt-3 border-t border-border">
+                <p className="text-xs text-text-muted mb-2">Sources</p>
                 <div className="flex flex-wrap gap-2">
                   {message.citations.map((citation, idx) => (
                     <SourceCard key={`${citation.url}-${idx}`} citation={citation} />

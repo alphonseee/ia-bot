@@ -19,19 +19,16 @@ export function MessageList({ messages }: MessageListProps) {
     return (
       <div className="flex-1 flex items-center justify-center p-8">
         <div className="text-center max-w-md">
-          <div className="text-6xl mb-4">🏋️</div>
-          <h2 className="text-2xl font-bold mb-2">Prêt à T&apos;Entraîner Plus Intelligemment ?</h2>
-          <p className="text-[var(--text-secondary)]">
-            Pose-moi tes questions sur les programmes d&apos;entraînement, la technique, 
-            la récupération ou tout ce qui touche à la musculation et la force.
+          <h2 className="text-xl font-bold mb-3">Salut 👋</h2>
+          <p className="text-text-muted mb-6">
+            Pose-moi tes questions sur l&apos;entraînement, la nutrition, 
+            les programmes... Je suis là pour t&apos;aider.
           </p>
-          <div className="mt-6 text-sm text-[var(--text-secondary)]">
-            <p className="mb-2">Essaie de demander :</p>
-            <ul className="space-y-1 text-left inline-block">
-              <li>• &quot;Crée-moi un programme full body sur 3 jours&quot;</li>
-              <li>• &quot;Comment améliorer ma profondeur au squat ?&quot;</li>
-              <li>• &quot;Quelle fourchette de reps pour l&apos;hypertrophie ?&quot;</li>
-            </ul>
+          <div className="text-sm text-text-muted text-left space-y-2">
+            <p className="font-medium text-text">Exemples :</p>
+            <p>• &quot;Crée-moi un programme débutant&quot;</p>
+            <p>• &quot;Comment améliorer mon squat ?&quot;</p>
+            <p>• &quot;Combien de protéines par jour ?&quot;</p>
           </div>
         </div>
       </div>
@@ -39,7 +36,7 @@ export function MessageList({ messages }: MessageListProps) {
   }
 
   return (
-    <div className="flex-1 overflow-y-auto p-4 space-y-4">
+    <div className="flex-1 overflow-y-auto p-6 space-y-4">
       {messages.map((message) => (
         <MessageBubble key={message.id} message={message} />
       ))}

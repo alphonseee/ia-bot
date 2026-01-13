@@ -15,7 +15,7 @@ class OllamaClient:
     
     async def chat(self, messages: List[dict]) -> str:
         try:
-            async with httpx.AsyncClient(timeout=120.0) as client:
+            async with httpx.AsyncClient(timeout=300.0) as client:
                 response = await client.post(
                     f"{self.base_url}/api/chat",
                     json={
@@ -32,7 +32,7 @@ class OllamaClient:
     
     async def chat_stream(self, messages: List[dict]) -> AsyncGenerator[str, None]:
         try:
-            async with httpx.AsyncClient(timeout=120.0) as client:
+            async with httpx.AsyncClient(timeout=300.0) as client:
                 async with client.stream(
                     "POST",
                     f"{self.base_url}/api/chat",

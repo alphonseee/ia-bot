@@ -23,10 +23,9 @@ class Settings(BaseSettings):
 settings = Settings()
 
 SEED_URLS: List[str] = [
-    "https://www.docteur-fitness.com/",
-    "https://www.fitadium.com/",
-    "https://www.superphysique.org/",
+    "https://www.superphysique.org/articles/",
     "https://www.espace-musculation.com/",
     "https://www.musculaction.com/",
-    "https://protrainer.fr/blog/",
+    "https://musculation-nutrition.fr/",
+    "https://www.coach-hunter.com/exercice"
 ]
