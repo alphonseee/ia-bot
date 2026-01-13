@@ -12,7 +12,6 @@ router = APIRouter()
 
 
 def make_error(id: str, code: int, message: str) -> dict:
-    """Create a JSON-RPC error response."""
     return {
         "jsonrpc": "2.0",
         "id": id,
@@ -21,7 +20,6 @@ def make_error(id: str, code: int, message: str) -> dict:
 
 
 def make_result(id: str, result: any) -> dict:
-    """Create a JSON-RPC success response."""
     return {
         "jsonrpc": "2.0",
         "id": id,
@@ -31,16 +29,13 @@ def make_result(id: str, result: any) -> dict:
 
 @router.post("/mcp")
 async def mcp_endpoint(request: JsonRpcRequest):
-    """Main MCP JSON-RPC endpoint."""
     try:
         method = request.method
         params = request.params
         
-        # List available tools
         if method == "tools/list":
             return make_result(request.id, {"tools": TOOLS})
         
-        # Execute a tool
         elif method == "tools/call":
             tool_name = params.get("name")
             arguments = params.get("arguments", {})
@@ -51,12 +46,10 @@ async def mcp_endpoint(request: JsonRpcRequest):
             result = await execute_tool(tool_name, arguments)
             return make_result(request.id, result)
         
-        # Chat completion
         elif method == "chat":
             chat_params = ChatParams(**params)
             
             if chat_params.stream:
-                # For streaming, return URL to SSE endpoint
                 return make_result(request.id, {
                     "streaming": True,
                     "message": "Connect to SSE endpoint for streaming response"
@@ -85,8 +78,6 @@ async def mcp_endpoint(request: JsonRpcRequest):
 
 @router.get("/mcp/stream")
 async def mcp_stream(session_id: str, message: str):
-    """SSE endpoint for streaming chat responses."""
-    # URL decode the message
     decoded_message = unquote(message)
     
     async def event_generator():
@@ -97,10 +88,8 @@ async def mcp_stream(session_id: str, message: str):
                 stream=True
             )
             
-            # Unpack the tuple (generator, sources)
             stream_gen, sources = result
             
-            # Send citations first
             if sources:
                 yield {
                     "event": "citations",
@@ -110,14 +99,12 @@ async def mcp_stream(session_id: str, message: str):
                     ])
                 }
             
-            # Stream tokens
             async for token in stream_gen:
                 yield {
                     "event": "token",
                     "data": token
                 }
             
-            # Signal completion
             yield {
                 "event": "done",
                 "data": ""

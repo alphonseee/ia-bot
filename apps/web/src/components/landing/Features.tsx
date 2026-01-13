@@ -1,33 +1,33 @@
 const features = [
   {
     icon: '🏋️',
-    title: 'Custom Programs',
-    description: 'Get personalized training programs based on your goals, experience, and available equipment.',
+    title: 'Programmes Sur Mesure',
+    description: 'Obtiens des programmes personnalisés selon tes objectifs, ton expérience et ton équipement disponible.',
   },
   {
     icon: '📚',
-    title: 'Evidence-Based',
-    description: 'Advice grounded in sports science from trusted sources like Stronger By Science and peer-reviewed research.',
+    title: 'Basé sur la Science',
+    description: 'Conseils fondés sur la recherche scientifique et les meilleures sources comme Stronger By Science.',
   },
   {
     icon: '🎯',
-    title: 'Technique Guidance',
-    description: 'Learn proper form and technique cues for compound lifts and isolation exercises.',
+    title: 'Conseils Techniques',
+    description: 'Apprends la bonne forme et les bons repères pour les mouvements composés et d\'isolation.',
   },
   {
     icon: '🔄',
-    title: 'Progressive Overload',
-    description: 'Understand periodization, deloads, and how to keep making gains long-term.',
+    title: 'Surcharge Progressive',
+    description: 'Comprends la périodisation, les deloads et comment continuer à progresser sur le long terme.',
   },
   {
     icon: '😴',
-    title: 'Recovery Advice',
-    description: 'Optimize sleep, nutrition timing, and rest days to maximize muscle growth.',
+    title: 'Conseils Récupération',
+    description: 'Optimise ton sommeil, ton timing nutritionnel et tes jours de repos pour maximiser tes gains.',
   },
   {
     icon: '🛡️',
-    title: 'Injury Prevention',
-    description: 'Learn safe training practices and how to work around limitations.',
+    title: 'Prévention Blessures',
+    description: 'Apprends les bonnes pratiques d\'entraînement et comment t\'adapter à tes limitations.',
   },
 ];
 
@@ -37,10 +37,10 @@ export function Features() {
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            What Can <span className="text-gradient">IronCoach</span> Help With?
+            Comment <span className="text-gradient">IronCoach</span> Peut T&apos;Aider ?
           </h2>
           <p className="text-[var(--text-secondary)] max-w-2xl mx-auto">
-            From complete beginners to advanced lifters, get guidance tailored to your level.
+            Du débutant complet au pratiquant avancé, obtiens des conseils adaptés à ton niveau.
           </p>
         </div>
 

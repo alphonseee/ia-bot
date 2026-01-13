@@ -17,12 +17,10 @@ export function ChatContainer({ initialQuery }: ChatContainerProps) {
   const [sessionId, setSessionId] = useState<string>('');
   const initialQuerySent = useRef(false);
 
-  // Initialize session ID on mount
   useEffect(() => {
     setSessionId(getSessionId());
   }, []);
 
-  // Handle initial query from URL
   useEffect(() => {
     if (initialQuery && sessionId && !initialQuerySent.current && messages.length === 0) {
       initialQuerySent.current = true;
@@ -50,7 +48,6 @@ export function ChatContainer({ initialQuery }: ChatContainerProps) {
     setMessages((prev) => [...prev, userMessage, assistantMessage]);
     setIsLoading(true);
 
-    // Store the cleanup function
     const cleanup = streamChatMessage(sessionId, content, {
       onCitations: (citations: Citation[]) => {
         setMessages((prev) =>
@@ -86,7 +83,7 @@ export function ChatContainer({ initialQuery }: ChatContainerProps) {
             msg.id === assistantMessage.id
               ? { 
                   ...msg, 
-                  content: msg.content || `Error: ${error}`, 
+                  content: msg.content || `Erreur : ${error}`, 
                   isStreaming: false 
                 }
               : msg
@@ -96,7 +93,6 @@ export function ChatContainer({ initialQuery }: ChatContainerProps) {
       },
     });
 
-    // Cleanup on unmount would go here if needed
     return cleanup;
   }, [sessionId, isLoading]);
 
@@ -109,7 +105,7 @@ export function ChatContainer({ initialQuery }: ChatContainerProps) {
           disabled={isLoading || !sessionId} 
         />
         <p className="text-xs text-[var(--text-secondary)] text-center mt-2">
-          IronCoach can make mistakes. Verify important information.
+          IronCoach peut faire des erreurs. Vérifie les informations importantes.
         </p>
       </div>
     </div>

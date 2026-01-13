@@ -12,7 +12,6 @@ export function ChatInput({ onSend, disabled, placeholder }: ChatInputProps) {
   const [message, setMessage] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // Auto-resize textarea
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
@@ -25,7 +24,6 @@ export function ChatInput({ onSend, disabled, placeholder }: ChatInputProps) {
     if (message.trim() && !disabled) {
       onSend(message.trim());
       setMessage('');
-      // Reset textarea height
       if (textareaRef.current) {
         textareaRef.current.style.height = 'auto';
       }
@@ -47,7 +45,7 @@ export function ChatInput({ onSend, disabled, placeholder }: ChatInputProps) {
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder={placeholder || "Ask about training, technique, programs..."}
+          placeholder={placeholder || "Pose ta question sur l'entraînement, la technique, les programmes..."}
           disabled={disabled}
           rows={1}
           className="flex-1 bg-transparent resize-none outline-none text-[var(--text-primary)] 
@@ -59,7 +57,7 @@ export function ChatInput({ onSend, disabled, placeholder }: ChatInputProps) {
           disabled={disabled || !message.trim()}
           className="p-3 bg-red-600 hover:bg-red-700 disabled:bg-[var(--border-color)] 
                      disabled:cursor-not-allowed rounded-xl transition-colors flex-shrink-0"
-          aria-label="Send message"
+          aria-label="Envoyer le message"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

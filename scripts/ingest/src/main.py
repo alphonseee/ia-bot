@@ -13,7 +13,6 @@ from .db import (
     get_stats
 )
 
-# Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s"
@@ -22,13 +21,10 @@ logger = logging.getLogger(__name__)
 
 
 async def process_document(doc: dict, source_id: str) -> bool:
-    """Process a single document: chunk, embed, store. Returns True if processed."""
-    # Check for duplicate content
     if await document_exists(doc["content_hash"]):
         logger.info(f"Skipping duplicate: {doc['url']}")
         return False
     
-    # Chunk the content
     chunks = chunk_text(doc["content"])
     logger.info(f"Created {len(chunks)} chunks for: {doc['title'][:50]}...")
     
@@ -36,7 +32,6 @@ async def process_document(doc: dict, source_id: str) -> bool:
         logger.warning(f"No chunks created for: {doc['url']}")
         return False
     
-    # Generate embeddings for each chunk
     logger.info(f"Generating embeddings for {len(chunks)} chunks...")
     for i, chunk in enumerate(chunks):
         try:
@@ -46,7 +41,6 @@ async def process_document(doc: dict, source_id: str) -> bool:
             logger.error(f"Failed to embed chunk {i}: {e}")
             return False
     
-    # Insert document
     try:
         doc_id = await insert_document(
             source_id=source_id,
@@ -56,7 +50,6 @@ async def process_document(doc: dict, source_id: str) -> bool:
             content_hash=doc["content_hash"]
         )
         
-        # Insert chunks
         inserted = await insert_chunks(doc_id, chunks)
         logger.info(f"Inserted document with {inserted} chunks: {doc['title'][:50]}...")
         return True
@@ -67,7 +60,6 @@ async def process_document(doc: dict, source_id: str) -> bool:
 
 
 async def ingest_seed_url(seed_url: str):
-    """Ingest all pages from a seed URL."""
     parsed = urlparse(seed_url)
     domain = parsed.netloc
     
@@ -75,14 +67,12 @@ async def ingest_seed_url(seed_url: str):
     logger.info(f"Starting ingestion of: {domain}")
     logger.info(f"{'='*60}")
     
-    # Get or create source
     source_id = await get_or_create_source(
         url=seed_url,
         domain=domain,
         title=domain
     )
     
-    # Crawl the domain
     documents = await crawl_domain(seed_url)
     logger.info(f"Crawled {len(documents)} pages from {domain}")
     
@@ -90,7 +80,6 @@ async def ingest_seed_url(seed_url: str):
         logger.warning(f"No documents found for {domain}")
         return
     
-    # Process each document
     processed = 0
     failed = 0
     
@@ -99,7 +88,6 @@ async def ingest_seed_url(seed_url: str):
         try:
             if await process_document(doc, source_id):
                 processed += 1
-            # Small delay between documents
             await asyncio.sleep(0.5)
         except Exception as e:
             logger.error(f"Error processing {doc['url']}: {e}")
@@ -109,7 +97,6 @@ async def ingest_seed_url(seed_url: str):
 
 
 async def main():
-    """Main ingestion entry point."""
     logger.info("="*60)
     logger.info("TRAINING COACH KNOWLEDGE BASE INGESTION")
     logger.info("="*60)
@@ -125,14 +112,12 @@ async def main():
     for url in SEED_URLS:
         logger.info(f"  - {url}")
     
-    # Process each seed URL
     for seed_url in SEED_URLS:
         try:
             await ingest_seed_url(seed_url)
         except Exception as e:
             logger.error(f"Error ingesting {seed_url}: {e}")
     
-    # Print final stats
     stats = await get_stats()
     logger.info("\n" + "="*60)
     logger.info("INGESTION COMPLETE")

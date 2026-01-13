@@ -3,17 +3,17 @@ from ..kb.search import search_knowledge_base
 TOOLS = [
     {
         "name": "search_knowledge_base",
-        "description": "Search the training knowledge base for relevant information about exercises, programs, techniques, and training concepts.",
+        "description": "Recherche dans la base de connaissances pour des informations sur les exercices, programmes, techniques et concepts d'entraînement.",
         "inputSchema": {
             "type": "object",
             "properties": {
                 "query": {
                     "type": "string",
-                    "description": "The search query"
+                    "description": "La requête de recherche"
                 },
                 "k": {
                     "type": "integer",
-                    "description": "Number of results to return",
+                    "description": "Nombre de résultats à retourner",
                     "default": 8
                 }
             },
@@ -24,7 +24,6 @@ TOOLS = [
 
 
 async def execute_tool(name: str, arguments: dict) -> dict:
-    """Execute a tool by name with given arguments."""
     if name == "search_knowledge_base":
         results = await search_knowledge_base(
             query=arguments["query"],

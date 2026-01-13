@@ -10,7 +10,6 @@ _robots_cache: dict = {}
 
 
 async def can_fetch(url: str) -> bool:
-    """Check if URL is allowed by robots.txt."""
     parsed = urlparse(url)
     robots_url = f"{parsed.scheme}://{parsed.netloc}/robots.txt"
     
@@ -22,11 +21,10 @@ async def can_fetch(url: str) -> bool:
                 if response.status_code == 200:
                     parser.parse(response.text)
                 else:
-                    parser.parse("")  # Allow all if no robots.txt
+                    parser.parse("")
                 _robots_cache[robots_url] = parser
         except Exception as e:
             logger.warning(f"Could not fetch robots.txt for {parsed.netloc}: {e}")
-            # If can't fetch robots.txt, assume allowed
             parser = RobotExclusionRulesParser()
             parser.parse("")
             _robots_cache[robots_url] = parser

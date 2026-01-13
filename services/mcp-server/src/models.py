@@ -33,6 +33,6 @@ class Citation(BaseModel):
 
 
 class ChatMessage(BaseModel):
-    role: str  # "user" | "assistant"
+    role: str
     content: str
     citations: List[Citation] = []

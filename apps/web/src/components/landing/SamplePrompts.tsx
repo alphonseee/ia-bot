@@ -1,12 +1,12 @@
 import Link from 'next/link';
 
 const prompts = [
-  "Create a 4-day upper/lower split for intermediate lifters",
-  "How do I fix buttwink in my squat?",
-  "What's the optimal protein intake for muscle growth?",
-  "How often should I deload?",
-  "Best exercises for building bigger shoulders",
-  "How to train around lower back pain",
+  "Crée-moi un programme push/pull/legs sur 4 jours",
+  "Comment corriger le buttwink au squat ?",
+  "Quelle quantité de protéines pour prendre du muscle ?",
+  "À quelle fréquence faire un deload ?",
+  "Meilleurs exercices pour les épaules",
+  "Comment m'entraîner avec une douleur au bas du dos",
 ];
 
 export function SamplePrompts() {
@@ -15,10 +15,10 @@ export function SamplePrompts() {
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Try Asking <span className="text-gradient">These</span>
+            Essaie Ces <span className="text-gradient">Questions</span>
           </h2>
           <p className="text-[var(--text-secondary)]">
-            Get started with some popular questions from the community.
+            Commence avec des questions populaires de la communauté.
           </p>
         </div>
 
@@ -43,7 +43,7 @@ export function SamplePrompts() {
             className="inline-flex px-8 py-4 bg-red-600 hover:bg-red-700 text-white 
                        font-semibold rounded-xl transition-all duration-200 glow-effect"
           >
-            Start Your Conversation
+            Commencer la Conversation
           </Link>
         </div>
       </div>

@@ -14,7 +14,6 @@ class OllamaClient:
         self.embed_model = settings.OLLAMA_EMBED_MODEL
     
     async def chat(self, messages: List[dict]) -> str:
-        """Non-streaming chat completion."""
         try:
             async with httpx.AsyncClient(timeout=120.0) as client:
                 response = await client.post(
@@ -32,7 +31,6 @@ class OllamaClient:
             raise RuntimeError(f"Failed to get response from Ollama: {e}")
     
     async def chat_stream(self, messages: List[dict]) -> AsyncGenerator[str, None]:
-        """Streaming chat completion."""
         try:
             async with httpx.AsyncClient(timeout=120.0) as client:
                 async with client.stream(
@@ -57,7 +55,6 @@ class OllamaClient:
             raise RuntimeError(f"Failed to stream from Ollama: {e}")
     
     async def embed(self, text: str) -> List[float]:
-        """Generate embedding for text."""
         try:
             async with httpx.AsyncClient(timeout=60.0) as client:
                 response = await client.post(
@@ -74,5 +71,4 @@ class OllamaClient:
             raise RuntimeError(f"Failed to generate embedding: {e}")
 
 
-# Singleton instance
 ollama_client = OllamaClient()

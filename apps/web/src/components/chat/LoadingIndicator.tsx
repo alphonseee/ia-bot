@@ -15,7 +15,7 @@ export function LoadingIndicator() {
           style={{ animationDelay: '300ms' }} 
         />
       </div>
-      <span className="text-sm">Thinking...</span>
+      <span className="text-sm">Réflexion en cours...</span>
     </div>
   );
 }

@@ -9,14 +9,11 @@ supabase = create_client(settings.SUPABASE_URL, settings.SUPABASE_KEY)
 
 
 async def get_or_create_source(url: str, domain: str, title: Optional[str] = None) -> str:
-    """Get existing source or create new one. Returns source ID."""
-    # Check if exists
     result = supabase.table("sources").select("id").eq("url", url).execute()
     
     if result.data:
         return result.data[0]["id"]
     
-    # Create new
     insert_result = supabase.table("sources").insert({
         "url": url,
         "domain": domain,
@@ -28,7 +25,6 @@ async def get_or_create_source(url: str, domain: str, title: Optional[str] = Non
 
 
 async def document_exists(content_hash: str) -> bool:
-    """Check if document with this content hash already exists."""
     result = supabase.table("documents").select("id").eq("content_hash", content_hash).execute()
     return len(result.data) > 0
 
@@ -40,7 +36,6 @@ async def insert_document(
     content_text: str,
     content_hash: str
 ) -> str:
-    """Insert document and return its ID."""
     result = supabase.table("documents").insert({
         "source_id": source_id,
         "url": url,
@@ -53,7 +48,6 @@ async def insert_document(
 
 
 async def insert_chunks(document_id: str, chunks: List[Dict]) -> int:
-    """Insert chunks with embeddings. Returns count inserted."""
     if not chunks:
         return 0
     
@@ -67,7 +61,6 @@ async def insert_chunks(document_id: str, chunks: List[Dict]) -> int:
             "embedding": chunk["embedding"]
         })
     
-    # Insert in batches to avoid request size limits
     batch_size = 50
     total_inserted = 0
     
@@ -80,7 +73,6 @@ async def insert_chunks(document_id: str, chunks: List[Dict]) -> int:
 
 
 async def get_stats() -> Dict:
-    """Get ingestion statistics."""
     sources = supabase.table("sources").select("id", count="exact").execute()
     documents = supabase.table("documents").select("id", count="exact").execute()
     chunks = supabase.table("chunks").select("id", count="exact").execute()

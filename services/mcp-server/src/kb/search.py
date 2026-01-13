@@ -9,12 +9,9 @@ supabase = create_client(settings.SUPABASE_URL, settings.SUPABASE_KEY)
 
 
 async def search_knowledge_base(query: str, k: int = 8, min_similarity: float = 0.5) -> list:
-    """Search KB using vector similarity."""
     try:
-        # Generate query embedding
         query_embedding = await ollama_client.embed(query)
         
-        # Call Supabase RPC function
         result = supabase.rpc(
             "match_chunks",
             {

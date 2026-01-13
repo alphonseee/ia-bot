@@ -13,8 +13,8 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'IronCoach AI - Your Strength Training Assistant',
-  description: 'AI-powered bodybuilding and strength training coach. Get personalized programs, technique advice, and evidence-based guidance.',
+  title: 'IronCoach IA - Ton Assistant Musculation',
+  description: 'Coach musculation et force propulsé par IA. Obtiens des programmes personnalisés, des conseils techniques et des réponses basées sur la science.',
 };
 
 export default function RootLayout({
@@ -23,7 +23,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="fr" className="dark">
       <body
         className={`${inter.variable} ${jetbrainsMono.variable} font-sans antialiased min-h-screen bg-[var(--bg-primary)]`}
       >

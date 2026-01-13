@@ -7,7 +7,6 @@ from .prompts import SYSTEM_PROMPT, REFUSAL_MESSAGE, build_rag_prompt
 
 logger = logging.getLogger(__name__)
 
-# Training-related keywords for topic filtering
 TRAINING_KEYWORDS = [
     "train", "workout", "exercise", "muscle", "strength", "gym",
     "weight", "rep", "set", "program", "routine", "lift", "squat",
@@ -20,7 +19,6 @@ TRAINING_KEYWORDS = [
     "machine", "free weight", "calisthenics", "pull", "push", "leg",
     "back", "chest", "shoulder", "bicep", "tricep", "core", "abs",
     "glute", "hamstring", "quad", "calf", "forearm", "grip",
-    # French keywords
     "entrainement", "musculation", "exercice", "programme", "séance",
     "récupération", "nutrition", "protéine", "masse", "sèche",
     "poids", "haltère", "barre", "série", "répétition"
@@ -28,14 +26,11 @@ TRAINING_KEYWORDS = [
 
 
 async def is_topic_allowed(message: str) -> bool:
-    """Check if the topic is training-related using keyword heuristics."""
     message_lower = message.lower()
     
-    # Allow if contains training keywords
     if any(kw in message_lower for kw in TRAINING_KEYWORDS):
         return True
     
-    # Allow short messages (likely follow-ups, greetings, or clarifications)
     if len(message.split()) < 6:
         return True
     
@@ -47,9 +42,7 @@ async def chat_completion(
     user_message: str,
     stream: bool = False
 ) -> Union[AsyncGenerator[str, None], Tuple[str, List[dict]]]:
-    """Process chat with RAG and return response with citations."""
     
-    # Topic check
     if not await is_topic_allowed(user_message):
         if stream:
             async def stream_refusal():
@@ -57,39 +50,32 @@ async def chat_completion(
             return stream_refusal(), []
         return REFUSAL_MESSAGE, []
     
-    # Get conversation history
     history = session_store.get_history(session_id)
     
-    # Search knowledge base
     kb_results = await search_knowledge_base(user_message, k=6)
     
-    # Build context from KB results
     context_chunks = [r["chunk_text"] for r in kb_results]
     sources = [
         {"title": r.get("document_title", ""), "url": r.get("document_url", "")} 
         for r in kb_results
     ]
-    # Remove duplicates while preserving order
     seen_urls = set()
     unique_sources = []
     for s in sources:
         if s["url"] and s["url"] not in seen_urls:
             seen_urls.add(s["url"])
             unique_sources.append(s)
-    sources = unique_sources[:5]  # Top 5 unique sources
+    sources = unique_sources[:5]
     
-    # Build messages for Ollama
     messages = [{"role": "system", "content": SYSTEM_PROMPT}]
     
     if context_chunks:
         rag_context = build_rag_prompt(context_chunks, sources)
         messages.append({"role": "system", "content": rag_context})
     
-    # Add conversation history
     messages.extend(history)
     messages.append({"role": "user", "content": user_message})
     
-    # Save user message to history
     session_store.add_message(session_id, "user", user_message)
     
     if stream:
@@ -100,7 +86,6 @@ async def chat_completion(
                     full_response += chunk
                     yield chunk
             finally:
-                # Save assistant response after streaming completes
                 if full_response:
                     session_store.add_message(session_id, "assistant", full_response)
         

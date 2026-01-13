@@ -22,7 +22,6 @@ export function MessageBubble({ message }: MessageBubbleProps) {
           <LoadingIndicator />
         ) : (
           <>
-            {/* Message content */}
             <div 
               className={`whitespace-pre-wrap break-words ${
                 message.isStreaming ? 'typing-cursor' : ''
@@ -31,10 +30,9 @@ export function MessageBubble({ message }: MessageBubbleProps) {
               {message.content}
             </div>
             
-            {/* Citations */}
             {!isUser && message.citations && message.citations.length > 0 && (
               <div className="mt-3 pt-3 border-t border-[var(--border-color)]">
-                <p className="text-xs text-[var(--text-secondary)] mb-2">Sources:</p>
+                <p className="text-xs text-[var(--text-secondary)] mb-2">Sources :</p>
                 <div className="flex flex-wrap gap-2">
                   {message.citations.map((citation, idx) => (
                     <SourceCard key={`${citation.url}-${idx}`} citation={citation} />

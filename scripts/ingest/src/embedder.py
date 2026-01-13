@@ -7,7 +7,6 @@ logger = logging.getLogger(__name__)
 
 
 async def generate_embedding(text: str) -> List[float]:
-    """Generate embedding via Ollama."""
     try:
         async with httpx.AsyncClient(timeout=60.0) as client:
             response = await client.post(
@@ -25,7 +24,6 @@ async def generate_embedding(text: str) -> List[float]:
 
 
 async def batch_embeddings(texts: List[str], batch_size: int = 10) -> List[List[float]]:
-    """Generate embeddings for multiple texts with progress logging."""
     embeddings = []
     total = len(texts)
     

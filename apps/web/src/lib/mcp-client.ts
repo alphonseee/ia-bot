@@ -87,16 +87,15 @@ export function streamChatMessage(
     if (event instanceof MessageEvent && event.data) {
       callbacks.onError(event.data);
     } else {
-      callbacks.onError('Connection lost. Please try again.');
+      callbacks.onError('Connexion perdue. Veuillez réessayer.');
     }
   });
 
   eventSource.onerror = () => {
     eventSource.close();
-    callbacks.onError('Failed to connect to server.');
+    callbacks.onError('Impossible de se connecter au serveur.');
   };
 
-  // Return cleanup function
   return () => {
     eventSource.close();
   };

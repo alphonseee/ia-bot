@@ -33,7 +33,6 @@ body {
   }
 }
 
-/* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -52,7 +51,6 @@ body {
   background: #3f3f46;
 }
 
-/* Typing animation */
 @keyframes blink {
   0%, 50% { opacity: 1; }
   51%, 100% { opacity: 0; }
@@ -65,12 +63,10 @@ body {
   margin-left: 2px;
 }
 
-/* Smooth scrolling */
 html {
   scroll-behavior: smooth;
 }
 
-/* Selection color */
 ::selection {
   background: rgba(220, 38, 38, 0.3);
   color: var(--text-primary);
