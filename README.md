@@ -53,7 +53,7 @@ Stack : **Next.js** + **FastAPI** + **RAG** (Retrieval-Augmented Generation) + *
 ### 1. Clone le repo
 
 ```bash
-git clone https://github.com/ton-username/ia-bot.git
+git clone https://github.com/alphonseee/ia-bot.git
 cd ia-bot
 ```
 
@@ -314,10 +314,6 @@ curl "http://localhost:8000/mcp/stream?session_id=test-123&message=Meilleurs%20e
 - **Mémoire de session** : Historique de conversation côté serveur (TTL 1h)
 - **Filtrage thématique** : Refuse poliment les questions hors-sujet
 - **100% local** : Tout tourne sur ta machine, pas d'API externe
-
-## 👨‍💻 Auteur
-
-Projet réalisé dans le cadre du cursus Epitech - 4ème année
 
 ## 📄 License
 
