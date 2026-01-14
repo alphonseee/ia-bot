@@ -1,4 +1,5 @@
 from pydantic_settings import BaseSettings
+from pathlib import Path
 from typing import List
 
 
@@ -17,7 +18,8 @@ class Settings(BaseSettings):
     CHUNK_OVERLAP_TOKENS: int = 150
     
     class Config:
-        env_file = ".env"
+        env_file = Path(__file__).resolve().parents[3] / ".env"
+        extra = "ignore"
 
 
 settings = Settings()
@@ -28,4 +30,5 @@ SEED_URLS: List[str] = [
     "https://www.musculaction.com/",
     "https://musculation-nutrition.fr/",
     "https://www.coach-hunter.com/exercice"
+    "https://www.superphysique.org/musculation/exercices_musculation/",
 ]

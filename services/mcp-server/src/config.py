@@ -1,4 +1,5 @@
 from pydantic_settings import BaseSettings
+from pathlib import Path
 
 
 class Settings(BaseSettings):
@@ -13,7 +14,8 @@ class Settings(BaseSettings):
     SESSION_TTL_SECONDS: int = 3600
     
     class Config:
-        env_file = ".env"
+        env_file = Path(__file__).resolve().parents[3] / ".env"
+        extra = "ignore"
 
 
 settings = Settings()
