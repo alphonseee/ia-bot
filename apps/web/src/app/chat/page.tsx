@@ -7,6 +7,7 @@ interface ChatPageProps {
 
 export default function ChatPage({ searchParams }: ChatPageProps) {
   return (
+    
     <div className="h-screen flex flex-col bg-bg">
       <header className="flex items-center justify-between px-6 py-4 border-b border-border flex-shrink-0">
         <Link 
