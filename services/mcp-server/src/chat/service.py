@@ -19,9 +19,15 @@ TRAINING_KEYWORDS = [
     "machine", "free weight", "calisthenics", "pull", "push", "leg",
     "back", "chest", "shoulder", "bicep", "tricep", "core", "abs",
     "glute", "hamstring", "quad", "calf", "forearm", "grip",
-    "entrainement", "musculation", "exercice", "programme", "séance",
+    "entrainement", "musculation", "exercice", "exo", "programme", "séance",
     "récupération", "nutrition", "protéine", "masse", "sèche",
-    "poids", "haltère", "barre", "série", "répétition"
+    "poids", "haltère", "barre", "série", "répétition",
+    "dos", "pec", "pectoraux", "épaule", "épaules", "bras", "jambe", "jambes",
+    "abdos", "fessier", "fessiers", "mollet", "mollets", "cuisse", "cuisses",
+    "biceps", "triceps", "avant-bras", "trapèze", "trapèzes", "lombaire",
+    "douleur", "mal", "blessure", "étirement", "échauffement", "repos",
+    "force", "endurance", "souplesse", "flexibilité", "posture",
+    "renforcement", "gainage", "abdominaux", "dorsal", "dorsaux"
 ]
 
 
@@ -31,7 +37,7 @@ async def is_topic_allowed(message: str) -> bool:
     if any(kw in message_lower for kw in TRAINING_KEYWORDS):
         return True
     
-    if len(message.split()) < 6:
+    if len(message.split()) <= 15:
         return True
     
     return False
