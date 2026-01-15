@@ -1,13 +1,15 @@
-# IronCoach AI - Strength Training Assistant
+# 🏋️ IronCoach - Coach Musculation IA
 
-An AI-powered bodybuilding and strength training coach built with Next.js, FastAPI, and RAG (Retrieval-Augmented Generation).
+Projet Epitech - Assistant IA spécialisé dans la musculation et le renforcement musculaire.
 
-## Architecture
+Stack : **Next.js** + **FastAPI** + **RAG** (Retrieval-Augmented Generation) + **Ollama**
+
+## 📐 Architecture
 
 ```
 ┌─────────────────┐     ┌──────────────────────┐     ┌─────────────┐
 │   Next.js App   │────▶│  FastAPI MCP Server  │────▶│   Ollama    │
-│   (Frontend)    │     │  (Backend + RAG)     │     │  (LLM/Embed)│
+│   (Frontend)    │     │  (Backend + RAG)     │     │  (LLM local)│
 └─────────────────┘     └──────────────────────┘     └─────────────┘
                                    │
                                    ▼
@@ -17,34 +19,59 @@ An AI-powered bodybuilding and strength training coach built with Next.js, FastA
                         └──────────────────────┘
 ```
 
-### Data Flow
+### Comment ça marche ?
 
-1. **Ingestion (one-time)**: Playwright crawls sites → Extract text → Chunk → Embed via Ollama → Store in Supabase
-2. **Chat (runtime)**: User query → Embed query → Vector search → RAG prompt → Ollama completion → Stream response
+**Phase 1 - Ingestion (une seule fois)** :
+1. Playwright crawl les sites de musculation
+2. BeautifulSoup extrait le contenu texte
+3. tiktoken découpe en chunks de ~1000 tokens
+4. Ollama génère les embeddings (vecteurs 768D)
+5. Stockage dans Supabase avec pgvector
 
-## Prerequisites
+**Phase 2 - Chat (runtime)** :
+1. L'utilisateur pose une question
+2. On embed la question → vecteur
+3. Recherche des chunks les plus similaires (cosine similarity)
+4. On injecte le contexte dans le prompt
+5. Ollama génère la réponse en streaming
+6. Le frontend affiche en temps réel + sources
 
-- **Node.js 20+** LTS
+## 🛠️ Prérequis
+
+- **Node.js 20+** (LTS)
 - **Python 3.11+**
-- **pnpm** (`npm install -g pnpm`)
-- **Ollama** running locally with models:
-  - `mistral` (chat)
-  - `nomic-embed-text` (embeddings)
-- **Supabase** project with pgvector enabled
+- **pnpm** → `npm install -g pnpm`
+- **Ollama** avec les modèles :
+  ```bash
+  ollama pull mistral
+  ollama pull nomic-embed-text
+  ```
+- **Supabase** avec l'extension pgvector activée
 
-## Quick Start
+## 🚀 Installation
 
-### 1. Clone and Setup
+### 1. Clone le repo
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/alphonseee/ia-bot.git
 cd ia-bot
-
-# Install frontend dependencies
-pnpm install
 ```
 
-### 2. Setup Backend (MCP Server)
+### 2. Configure l'environnement
+
+Copie le fichier d'exemple et remplis tes credentials :
+
+```bash
+cp .env.example .env
+```
+
+Modifie `.env` avec tes infos Supabase :
+```env
+SUPABASE_URL=https://xxx.supabase.co
+SUPABASE_KEY=ta-anon-key
+```
+
+### 3. Setup le backend (MCP Server)
 
 ```powershell
 cd services/mcp-server
@@ -53,7 +80,7 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
-### 3. Setup Ingestion Script
+### 4. Setup le script d'ingestion
 
 ```powershell
 cd scripts/ingest
@@ -63,44 +90,124 @@ pip install -r requirements.txt
 playwright install chromium
 ```
 
-### 4. Configure Environment
+### 5. Setup le frontend
 
 ```bash
-# Copy env examples
-cp .env.example .env
-cp apps/web/.env.example apps/web/.env.local
-cp services/mcp-server/.env.example services/mcp-server/.env
-cp scripts/ingest/.env.example scripts/ingest/.env
+cd apps/web
+pnpm install
 ```
 
-Edit each `.env` file with your Supabase credentials:
-- `SUPABASE_URL` - Your project URL
-- `SUPABASE_KEY` - Your anon key (or service_role for ingestion)
+### 6. Setup la base de données
 
-### 5. Setup Ollama Models
+Va dans Supabase Dashboard → SQL Editor et exécute :
+
+```sql
+-- Active pgvector
+CREATE EXTENSION IF NOT EXISTS vector;
+
+-- Table sources (sites scrapés)
+CREATE TABLE sources (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    url TEXT NOT NULL UNIQUE,
+    domain TEXT NOT NULL,
+    title TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Table documents (pages)
+CREATE TABLE documents (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    source_id UUID REFERENCES sources(id) ON DELETE CASCADE,
+    url TEXT NOT NULL,
+    title TEXT,
+    content_text TEXT,
+    content_hash TEXT NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Table chunks (morceaux de texte + embeddings)
+CREATE TABLE chunks (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    document_id UUID REFERENCES documents(id) ON DELETE CASCADE,
+    chunk_index INTEGER NOT NULL,
+    chunk_text TEXT NOT NULL,
+    token_count INTEGER,
+    embedding VECTOR(768),
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Index pour la recherche vectorielle
+CREATE INDEX chunks_embedding_idx ON chunks 
+USING hnsw (embedding vector_cosine_ops);
+
+-- Index pour éviter les doublons
+CREATE INDEX documents_hash_idx ON documents 
+USING hash (content_hash);
+
+-- Fonction de recherche
+CREATE OR REPLACE FUNCTION match_chunks(
+    query_embedding VECTOR(768),
+    match_count INT DEFAULT 5,
+    min_similarity FLOAT DEFAULT 0.5
+)
+RETURNS TABLE (
+    chunk_id UUID,
+    chunk_text TEXT,
+    document_url TEXT,
+    document_title TEXT,
+    similarity FLOAT
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        c.id AS chunk_id,
+        c.chunk_text,
+        d.url AS document_url,
+        d.title AS document_title,
+        1 - (c.embedding <=> query_embedding) AS similarity
+    FROM chunks c
+    JOIN documents d ON c.document_id = d.id
+    WHERE 1 - (c.embedding <=> query_embedding) >= min_similarity
+    ORDER BY c.embedding <=> query_embedding
+    LIMIT match_count;
+END;
+$$;
+```
+
+## ▶️ Lancement
+
+### Terminal 1 - Backend
+
+```powershell
+cd services/mcp-server
+.venv\Scripts\activate
+uvicorn src.main:app --reload --port 8000
+```
+
+### Terminal 2 - Frontend
 
 ```bash
-ollama pull mistral
-ollama pull nomic-embed-text
+cd apps/web
+pnpm dev
 ```
 
-### 6. Database Setup
+Ouvre http://localhost:3000 🎉
 
-Run the migration in Supabase SQL Editor:
-- Open `supabase/migrations/20260108000000_init.sql`
-- Execute in Supabase Dashboard → SQL Editor
+## 📥 Ingestion des données
 
-### 7. Run Ingestion (Optional)
-
-Edit `scripts/ingest/src/config.py` to add seed URLs:
+Pour remplir la knowledge base, modifie les URLs dans `scripts/ingest/src/config.py` :
 
 ```python
 SEED_URLS = [
-    "https://www.example-training-site.com/",
+    "https://www.superphysique.org/articles/",
+    "https://www.espace-musculation.com/",
+    # Ajoute tes sites ici
 ]
 ```
 
-Then run:
+Puis lance :
 
 ```powershell
 cd scripts/ingest
@@ -108,60 +215,52 @@ cd scripts/ingest
 python -m src.main
 ```
 
-### 8. Start Development Servers
+Le script va :
+- Crawler jusqu'à 50 pages par domaine (configurable)
+- Respecter le robots.txt
+- Attendre 1.5s entre chaque requête
+- Chunker et embedder tout le contenu
 
-**Terminal 1 - Backend:**
-```powershell
-cd services/mcp-server
-.venv\Scripts\activate
-uvicorn src.main:app --reload --port 8000
-```
-
-**Terminal 2 - Frontend:**
-```bash
-pnpm dev
-```
-
-Visit http://localhost:3000
-
-## Project Structure
+## 📁 Structure du projet
 
 ```
 ia-bot/
-├── apps/web/              # Next.js 14 frontend
-│   ├── src/app/           # App Router pages
-│   ├── src/components/    # React components
-│   └── src/lib/           # Utilities & MCP client
-├── services/mcp-server/   # FastAPI backend
+├── .env                      # Config centralisée (un seul fichier!)
+├── apps/web/                 # Frontend Next.js 14
+│   ├── src/app/              # Pages (App Router)
+│   ├── src/components/       # Composants React
+│   └── src/lib/              # Client MCP + utils
+├── services/mcp-server/      # Backend FastAPI
 │   └── src/
-│       ├── mcp/           # JSON-RPC router
-│       ├── chat/          # RAG + sessions
-│       ├── kb/            # Knowledge base search
-│       └── ollama/        # Ollama client
-├── scripts/ingest/        # Data ingestion pipeline
+│       ├── mcp/              # Router JSON-RPC
+│       ├── chat/             # RAG + sessions + prompts
+│       ├── kb/               # Recherche vectorielle
+│       └── ollama/           # Client Ollama
+├── scripts/ingest/           # Pipeline d'ingestion
 │   └── src/
-│       ├── crawler.py     # Playwright crawler
-│       ├── chunker.py     # Text chunking
-│       ├── embedder.py    # Ollama embeddings
-│       └── db.py          # Supabase client
-└── supabase/migrations/   # Database schema
+│       ├── crawler.py        # Playwright
+│       ├── extractor.py      # BeautifulSoup
+│       ├── chunker.py        # tiktoken
+│       ├── embedder.py       # Ollama embeddings
+│       └── db.py             # Supabase client
+└── supabase/                 # Migrations SQL
 ```
 
-## API Reference
+## 🔌 API Reference
 
 ### Health Check
 ```bash
 curl http://localhost:8000/health
 ```
 
-### List Tools
+### Lister les tools MCP
 ```bash
 curl -X POST http://localhost:8000/mcp \
   -H "Content-Type: application/json" \
   -d '{"jsonrpc":"2.0","id":"1","method":"tools/list","params":{}}'
 ```
 
-### Search Knowledge Base
+### Recherche dans la KB
 ```bash
 curl -X POST http://localhost:8000/mcp \
   -H "Content-Type: application/json" \
@@ -171,12 +270,12 @@ curl -X POST http://localhost:8000/mcp \
     "method":"tools/call",
     "params":{
       "name":"search_knowledge_base",
-      "arguments":{"query":"squat technique","k":5}
+      "arguments":{"query":"technique squat","k":5}
     }
   }'
 ```
 
-### Chat (Non-Streaming)
+### Chat (sans streaming)
 ```bash
 curl -X POST http://localhost:8000/mcp \
   -H "Content-Type: application/json" \
@@ -186,37 +285,36 @@ curl -X POST http://localhost:8000/mcp \
     "method":"chat",
     "params":{
       "session_id":"test-123",
-      "message":"How do I improve my bench press?",
+      "message":"Comment améliorer mon développé couché ?",
       "stream":false
     }
   }'
 ```
 
-### Chat (SSE Streaming)
+### Chat (SSE streaming)
 ```bash
-curl "http://localhost:8000/mcp/stream?session_id=test-123&message=Best%20exercises%20for%20back"
+curl "http://localhost:8000/mcp/stream?session_id=test-123&message=Meilleurs%20exercices%20dos"
 ```
 
-## Tech Stack
+## 🧰 Stack technique
 
-| Component | Technology |
-|-----------|------------|
+| Composant | Techno |
+|-----------|--------|
 | Frontend | Next.js 14, React 18, Tailwind CSS |
 | Backend | FastAPI, Python 3.11+ |
-| LLM | Ollama (Mistral for chat, nomic-embed-text for embeddings) |
-| Database | Supabase PostgreSQL + pgvector |
-| Scraping | Playwright |
-| Protocol | MCP-like JSON-RPC over HTTP with SSE streaming |
+| LLM | Ollama (Mistral chat, nomic-embed-text embeddings) |
+| BDD | Supabase PostgreSQL + pgvector |
+| Scraping | Playwright + BeautifulSoup4 |
+| Protocole | JSON-RPC over HTTP + SSE streaming |
 
-## Features
+## ✨ Features
 
-- **RAG-Enhanced Chat**: Responses cite sources from the knowledge base
-- **SSE Streaming**: Real-time token streaming for responsive UX
-- **Session Memory**: Server-side conversation history with TTL
-- **Topic Filtering**: Politely refuses off-topic questions
-- **Multi-language**: Responds in the user's language
-- **Evidence-Based**: Crawled from trusted training resources
+- **RAG** : Les réponses citent les sources de la knowledge base
+- **Streaming SSE** : Affichage token par token en temps réel
+- **Mémoire de session** : Historique de conversation côté serveur (TTL 1h)
+- **Filtrage thématique** : Refuse poliment les questions hors-sujet
+- **100% local** : Tout tourne sur ta machine, pas d'API externe
 
-## License
+## 📄 License
 
 MIT
