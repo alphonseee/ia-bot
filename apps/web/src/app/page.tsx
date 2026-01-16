@@ -165,12 +165,12 @@ export default function Home() {
           alt="Coach sportif expliquant un exercice à un robot IA"
           fill
           priority
-          className="object-cover object-center opacity-60"
+          className="object-cover object-center opacity-40"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-black/50" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/60" />
       </div>
 
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-bg/40 backdrop-blur-sm border-b border-border/60">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-bg/40  border-b border-border/60">
         <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link
             href="/"
@@ -201,7 +201,7 @@ export default function Home() {
         </div>
       </nav>
 
-      <section className="pt-28 md:pt-32 pb-16 backdrop-blur-sm px-6 relative overflow-hidden">
+      <section className="pt-28 md:pt-32 pb-16  px-6 relative overflow-hidden">
         <div className="pointer-events-none absolute inset-0 z-0">
           <div className="absolute -top-40 -right-32 h-72 w-72 rounded-full bg-accent/20 blur-3xl" />
           <div className="absolute -bottom-40 -left-32 h-72 w-72 rounded-full bg-accent/10 blur-3xl" />
@@ -210,7 +210,7 @@ export default function Home() {
         <div className="max-w-5xl mx-auto relative z-10">
           <div className="flex flex-col lg:flex-row items-start gap-12 lg:items-center">
             <div className="flex-1">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-accent/30 bg-bg/40 text-xs font-medium text-accent mb-4 backdrop-blur-sm">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-accent/30 bg-bg/40 text-xs font-medium text-accent mb-4 ">
                 <span className="inline-flex h-1.5 w-1.5 rounded-full bg-accent animate-pulse" />
                 Nouveau • Coach musculation IA 24/7
               </div>
@@ -236,7 +236,7 @@ export default function Home() {
                 </Link>
                 <Link
                   href="#demo"
-                  className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full border border-border/70 bg-bg-alt/30 text-sm md:text-base font-medium text-text hover:border-accent/60 hover:text-accent transition-colors backdrop-blur-sm"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full border border-border/70 bg-bg-alt/30 text-sm md:text-base font-medium text-text hover:border-accent/60 hover:text-accent transition-colors "
                 >
                   Voir un exemple
                   <span aria-hidden>⬎</span>
@@ -248,85 +248,11 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="flex-1 w-full">
-              <div className="relative rounded-2xl border border-border/70 bg-bg/40 backdrop-blur-md shadow-[0_18px_60px_rgba(0,0,0,0.65)] p-4 md:p-5 max-w-md ml-auto">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-2">
-                    <span className="h-8 w-8 rounded-full bg-accent/20 flex items-center justify-center text-xs font-semibold text-accent">
-                      H
-                    </span>
-                    <div>
-                      <p className="text-xs font-medium">Hephaestus</p>
-                      <p className="text-[11px] text-text-muted">Toujours disponible</p>
-                    </div>
-                  </div>
-                  <span className="text-[11px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
-                    En ligne
-                  </span>
-                </div>
-
-                <div className="space-y-3 text-xs md:text-sm">
-                  <div className="flex justify-end">
-                    <div className="max-w-[80%] rounded-2xl rounded-br-sm bg-accent text-white px-3 py-2 shadow-sm">
-                      <p>
-                        Je suis débutant, 3 séances par semaine et accès à une salle. Tu peux me
-                        proposer un programme ?
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex justify-start">
-                    <div className="max-w-[85%] rounded-2xl rounded-bl-sm bg-bg-alt/80 backdrop-blur-sm px-3 py-2 border border-border/80">
-                      <p className="font-medium mb-1">Bien sûr !</p>
-                      <p className="text-text-muted text-[11px] md:text-xs">
-                        On part sur un full body 3x/semaine, avec focus sur les mouvements de base
-                        et une progression simple.
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-3 gap-2 text-[11px]">
-                    <div className="rounded-xl border border-border bg-bg/80 px-2 py-2">
-                      <p className="font-semibold mb-1">Jour 1</p>
-                      <p className="text-text-muted">
-                        Squat, développé couché, tirage horizontal, gainage.
-                      </p>
-                    </div>
-                    <div className="rounded-xl border border-border bg-bg/80 px-2 py-2">
-                      <p className="font-semibold mb-1">Jour 2</p>
-                      <p className="text-text-muted">
-                        Soulevé de terre jambes tendues, développé militaire, tractions assistées.
-                      </p>
-                    </div>
-                    <div className="rounded-xl border border-border bg-bg/80 px-2 py-2">
-                      <p className="font-semibold mb-1">Jour 3</p>
-                      <p className="text-text-muted">
-                        Variantes plus légères + travail technique et core.
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="mt-2 rounded-xl border border-border/80 bg-bg/90 px-3 py-2">
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-[11px] font-medium text-text-muted uppercase tracking-wide">
-                        Sources (exemple)
-                      </span>
-                      <span className="text-[11px] text-accent">Voir tout</span>
-                    </div>
-                    <ul className="space-y-0.5 text-[11px] text-text-muted">
-                      <li>• Guide pratique de musculation – Delavier &amp; Gundill</li>
-                      <li>• Recommandations ACSM pour l'entraînement de force</li>
-                      <li>• Articles de revue sur la surcharge progressive</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </section>
 
-      <section id="demo" className="py-16 px-6 border-t border-border bg-bg-alt/20 backdrop-blur-sm">
+      <section id="demo" className="py-16 px-6 border-t border-border bg-bg-alt/20 ">
         <div className="max-w-5xl mx-auto">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
             <div>
@@ -344,7 +270,7 @@ export default function Home() {
           </div>
 
           <div className="grid lg:grid-cols-[1.4fr_minmax(0,1fr)] gap-8 items-start">
-            <div className="rounded-2xl border border-border bg-bg/80 backdrop-blur-sm p-5 md:p-6 shadow-[0_14px_50px_rgba(0,0,0,0.45)]">
+            <div className="rounded-2xl border border-border bg-bg/80  p-5 md:p-6 shadow-[0_14px_50px_rgba(0,0,0,0.45)]">
               <div className="text-xs font-medium text-text-muted uppercase tracking-[0.18em] mb-4">
                 Exemple de conversation
               </div>
@@ -389,7 +315,7 @@ export default function Home() {
             </div>
 
             <div className="space-y-4">
-              <div className="rounded-2xl border border-border bg-bg/80 backdrop-blur-sm p-4 md:p-5">
+              <div className="rounded-2xl border border-border bg-bg/80  p-4 md:p-5">
                 <p className="text-xs font-semibold text-text-muted uppercase tracking-[0.2em] mb-3">
                   Mini programme 3 jours (exemple)
                 </p>
@@ -417,7 +343,7 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-border bg-bg/80 backdrop-blur-sm p-4">
+              <div className="rounded-2xl border border-border bg-bg/80  p-4">
                 <p className="text-xs font-semibold text-text-muted uppercase tracking-[0.2em] mb-2">
                   Sources (affichées dans le chat)
                 </p>
@@ -437,7 +363,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-16 px-6 border-t backdrop-blur-sm border-border">
+      <section className="py-16 px-6 border-t  border-border">
         <div className="max-w-5xl mx-auto">
           <div className="flex items-center justify-between gap-4 mb-6">
             <div>
@@ -456,7 +382,7 @@ export default function Home() {
               <Link
                 key={item.label}
                 href={`/chat?q=${encodeURIComponent(item.label)}`}
-                className="group flex flex-col items-start gap-2 p-4 rounded-2xl border border-border/70 bg-bg-alt/30 backdrop-blur-sm hover:border-accent/60 hover:bg-bg-alt/40 transition-colors"
+                className="group flex flex-col items-start gap-2 p-4 rounded-2xl border border-border/70 bg-bg-alt/30  hover:border-accent/60 hover:bg-bg-alt/40 transition-colors"
               >
                 <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-accent/10 text-[11px] font-medium text-accent border border-accent/30">
                   {item.category}
@@ -477,7 +403,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-16 px-6 border-t border-border bg-bg-alt/15 backdrop-blur-sm">
+      <section className="py-16 px-6 border-t border-border bg-bg-alt/15 ">
         <div className="max-w-5xl mx-auto">
           <div className="mb-8">
             <h2 className="text-sm font-semibold text-accent uppercase tracking-[0.18em] mb-2">
@@ -492,7 +418,7 @@ export default function Home() {
             {benefits.map((benefit) => (
               <div
                 key={benefit.title}
-                className="relative rounded-2xl border border-border bg-bg/80 backdrop-blur-sm p-4 hover:-translate-y-1 hover:border-accent/70 transition-all duration-200"
+                className="relative rounded-2xl border border-border bg-bg/80  p-4 hover:-translate-y-1 hover:border-accent/70 transition-all duration-200"
               >
                 <div className="mb-3 inline-flex h-8 w-8 items-center justify-center rounded-full bg-accent/10 text-accent">
                   <PlusIcon />
@@ -505,7 +431,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-16 px-6 border-t backdrop-blur-sm border-border">
+      <section className="py-16 px-6 border-t  border-border">
         <div className="max-w-5xl mx-auto">
           <div className="mb-8">
             <h2 className="text-sm font-semibold text-accent uppercase tracking-[0.18em] mb-2">
@@ -518,7 +444,7 @@ export default function Home() {
             {profiles.map((profile) => (
               <div
                 key={profile.title}
-                className="rounded-2xl border border-border/70 bg-bg-alt/30 backdrop-blur-sm p-4 hover:border-accent/70 transition-colors"
+                className="rounded-2xl border border-border/70 bg-bg-alt/30  p-4 hover:border-accent/70 transition-colors"
               >
                 <p className="text-xs font-semibold text-accent uppercase tracking-[0.18em] mb-2">
                   Profil
@@ -538,7 +464,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-16 px-6 border-t border-border bg-bg-alt/15 backdrop-blur-sm">
+      <section className="py-16 px-6 border-t border-border bg-bg-alt/15 ">
         <div className="max-w-5xl mx-auto">
           <div className="mb-8">
             <h2 className="text-sm font-semibold text-accent uppercase tracking-[0.18em] mb-2">
@@ -560,7 +486,7 @@ export default function Home() {
                       {s.step}
                     </div>
                   </div>
-                  <div className="rounded-2xl border border-border bg-bg/80 backdrop-blur-sm p-4 flex-1">
+                  <div className="rounded-2xl border border-border bg-bg/80  p-4 flex-1">
                     <h3 className="font-semibold mb-1">{s.title}</h3>
                     <p className="text-sm text-text-muted">{s.desc}</p>
                     {index === 0 && (
@@ -577,7 +503,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-16 px-6 border-t backdrop-blur-sm border-border">
+      <section className="py-16 px-6 border-t  border-border">
         <div className="max-w-5xl mx-auto">
           <div className="mb-8">
             <h2 className="text-sm font-semibold text-accent uppercase tracking-[0.18em] mb-2">
@@ -590,7 +516,7 @@ export default function Home() {
             {testimonials.map((t) => (
               <div
                 key={t.name}
-                className="rounded-2xl border border-border/70 bg-bg-alt/30 backdrop-blur-sm p-4 flex flex-col justify-between"
+                className="rounded-2xl border border-border/70 bg-bg-alt/30  p-4 flex flex-col justify-between"
               >
                 <div className="mb-3">
                   <p className="text-sm font-semibold">{t.name}</p>
@@ -609,7 +535,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="faq" className="py-16 px-6 border-t border-border bg-bg-alt/20 backdrop-blur-sm">
+      <section id="faq" className="py-16 px-6 border-t border-border bg-bg-alt/20 ">
         <div className="max-w-5xl mx-auto">
           <div className="mb-8">
             <h2 className="text-sm font-semibold text-accent uppercase tracking-[0.18em] mb-2">
@@ -622,7 +548,7 @@ export default function Home() {
             {faqs.map((item) => (
               <details
                 key={item.question}
-                className="group rounded-2xl border border-border bg-bg/80 backdrop-blur-sm overflow-hidden"
+                className="group rounded-2xl border border-border bg-bg/80  overflow-hidden"
               >
                 <summary className="list-none flex items-center justify-between gap-3 px-4 py-3 cursor-pointer select-none">
                   <p className="text-sm font-medium">{item.question}</p>
@@ -642,7 +568,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-16 px-6 border-t backdrop-blur-sm border-border">
+      <section className="py-16 px-6 border-t  border-border">
         <div className="max-w-4xl mx-auto">
           <div className="relative overflow-hidden rounded-3xl border border-accent/40 bg-gradient-to-r from-accent/15 via-accent/5 to-bg-alt/60 px-6 py-8 md:px-8 md:py-10 shadow-[0_18px_60px_rgba(0,0,0,0.65)]">
             <div className="absolute -right-24 -top-24 h-64 w-64 rounded-full bg-accent/20 blur-3xl" />
@@ -675,7 +601,7 @@ export default function Home() {
         </div>
       </section>
 
-      <footer className="py-8 px-6 border-t border-border bg-bg-alt/20 backdrop-blur-sm">
+      <footer className="py-8 px-6 border-t border-border bg-bg-alt/20 ">
         <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-text-muted">
           <div className="flex items-center gap-2">
             <span className="font-medium">Hephaestus © 2026</span>
