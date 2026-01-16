@@ -1,111 +1,154 @@
-# 🏋️ IronCoach - Coach Musculation IA
+# 🔥 Hephaestus
 
-Projet Epitech - Assistant IA spécialisé dans la musculation et le renforcement musculaire.
+**Assistant IA Coach Musculation** — Projet Epitech 4ème année
 
-Stack : **Next.js** + **FastAPI** + **RAG** (Retrieval-Augmented Generation) + **Ollama**
+
+---
+
+## 📋 Sommaire
+
+- [Présentation](#-présentation)
+- [Architecture](#-architecture)
+- [Stack technique](#-stack-technique)
+- [Prérequis](#-prérequis)
+- [Installation](#-installation)
+- [Lancement](#-lancement)
+- [Ingestion des données](#-ingestion-des-données)
+- [Structure du projet](#-structure-du-projet)
+- [API Reference](#-api-reference)
+- [Fonctionnalités](#-fonctionnalités)
+- [Équipe](#-équipe)
+
+---
+
+## 🎯 Présentation
+
+**Hephaestus** est un assistant IA spécialisé dans la musculation et l'entraînement de force.
+
+### Le problème
+
+- L'information sur la musculation est fragmentée et souvent peu fiable
+- Les coachs coûtent cher
+- Les IA génériques (ChatGPT, etc.) hallucinent sur les sujets sportifs
+
+### Notre solution
+
+- Une IA spécialisée **uniquement** sur la musculation
+- Une base de connaissances vérifiée (sites francophones de référence)
+- Des réponses **sourcées** avec citations
+- 100% local (Ollama), aucune donnée envoyée à des serveurs externes
+
+### Comment ça marche ?
+
+On utilise la technique **RAG** (Retrieval-Augmented Generation) :
+
+1. On scrape des sites de musculation francophones
+2. On découpe le contenu en chunks et on génère des embeddings (vecteurs)
+3. Quand l'utilisateur pose une question, on cherche les chunks les plus pertinents
+4. On injecte ce contexte dans le prompt du LLM
+5. Le LLM génère une réponse basée sur des sources réelles
+
+---
 
 ## 📐 Architecture
 
 ```
 ┌─────────────────┐     ┌──────────────────────┐     ┌─────────────┐
 │   Next.js App   │────▶│  FastAPI MCP Server  │────▶│   Ollama    │
-│   (Frontend)    │     │  (Backend + RAG)     │     │  (LLM local)│
+│   (Frontend)    │◀────│  (Backend + RAG)     │◀────│  (Mistral)  │
 └─────────────────┘     └──────────────────────┘     └─────────────┘
-                                   │
-                                   ▼
+       SSE                         │
+    streaming                      ▼
                         ┌──────────────────────┐
                         │  Supabase PostgreSQL │
-                        │  (pgvector)          │
+                        │  + pgvector          │
                         └──────────────────────┘
 ```
 
-### Comment ça marche ?
+### Flux de données
 
-**Phase 1 - Ingestion (une seule fois)** :
-1. Playwright crawl les sites de musculation
-2. BeautifulSoup extrait le contenu texte
-3. tiktoken découpe en chunks de ~1000 tokens
-4. Ollama génère les embeddings (vecteurs 768D)
-5. Stockage dans Supabase avec pgvector
+**Phase 1 — Ingestion (one-shot)**
 
-**Phase 2 - Chat (runtime)** :
-1. L'utilisateur pose une question
-2. On embed la question → vecteur
-3. Recherche des chunks les plus similaires (cosine similarity)
-4. On injecte le contexte dans le prompt
-5. Ollama génère la réponse en streaming
-6. Le frontend affiche en temps réel + sources
+```
+Sites web ──▶ Playwright (crawl) ──▶ BeautifulSoup (extract)
+                                              │
+                                              ▼
+Supabase ◀── Ollama (embed) ◀── tiktoken (chunk ~1000 tokens)
+```
 
-## 🛠️ Prérequis
+**Phase 2 — Chat (runtime)**
 
-- **Node.js 20+** (LTS)
-- **Python 3.11+**
-- **pnpm** → `npm install -g pnpm`
-- **Ollama** avec les modèles :
-  ```bash
-  ollama pull mistral
-  ollama pull nomic-embed-text
-  ```
-- **Supabase** avec l'extension pgvector activée
+```
+Question ──▶ Embed ──▶ Recherche vectorielle ──▶ Top 5 chunks
+                                                      │
+                                                      ▼
+Réponse ◀── Ollama (Mistral) ◀── Prompt + contexte RAG
+```
+
+---
+
+## 🧰 Stack technique
+
+| Composant | Technologies |
+|-----------|--------------|
+| **Frontend** | Next.js 14 (App Router), React 18, TypeScript, Tailwind CSS |
+| **Backend** | FastAPI, Python 3.11+, Pydantic |
+| **LLM** | Ollama — Mistral (chat), nomic-embed-text (embeddings) |
+| **Base de données** | Supabase PostgreSQL + pgvector (HNSW index) |
+| **Scraping** | Playwright (headless browser), BeautifulSoup4 |
+| **Protocole** | JSON-RPC over HTTP, SSE streaming |
+| **Monorepo** | pnpm workspaces |
+
+---
+
+## 🛠 Prérequis
+
+| Outil | Version | Installation |
+|-------|---------|--------------|
+| Node.js | 20+ LTS | [nodejs.org](https://nodejs.org) |
+| Python | 3.11+ | [python.org](https://python.org) |
+| pnpm | 8+ | `npm install -g pnpm` |
+| Ollama | latest | [ollama.ai](https://ollama.ai) |
+| Supabase | — | Compte gratuit sur [supabase.com](https://supabase.com) |
+
+### Modèles Ollama requis
+
+```bash
+ollama pull mistral
+ollama pull nomic-embed-text
+```
+
+---
 
 ## 🚀 Installation
 
 ### 1. Clone le repo
 
 ```bash
-git clone https://github.com/alphonseee/ia-bot.git
+git clone https://github.com/alphonseee/hephaestus.git
 cd ia-bot
 ```
 
-### 2. Configure l'environnement
-
-Copie le fichier d'exemple et remplis tes credentials :
+### 2. Configuration environnement
 
 ```bash
 cp .env.example .env
 ```
 
-Modifie `.env` avec tes infos Supabase :
+Édite `.env` avec tes credentials Supabase :
+
 ```env
-SUPABASE_URL=https://xxx.supabase.co
-SUPABASE_KEY=ta-anon-key
+SUPABASE_URL=https://xxxxx.supabase.co
+SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6...
 ```
 
-### 3. Setup le backend (MCP Server)
+### 3. Setup la base de données
 
-```powershell
-cd services/mcp-server
-python -m venv .venv
-.venv\Scripts\activate
-pip install -r requirements.txt
-```
-
-### 4. Setup le script d'ingestion
-
-```powershell
-cd scripts/ingest
-python -m venv .venv
-.venv\Scripts\activate
-pip install -r requirements.txt
-playwright install chromium
-```
-
-### 5. Setup le frontend
-
-```bash
-cd apps/web
-pnpm install
-```
-
-### 6. Setup la base de données
-
-Va dans Supabase Dashboard → SQL Editor et exécute :
+Dans **Supabase Dashboard → SQL Editor**, exécute ce script :
 
 ```sql
--- Active pgvector
 CREATE EXTENSION IF NOT EXISTS vector;
 
--- Table sources (sites scrapés)
 CREATE TABLE sources (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     url TEXT NOT NULL UNIQUE,
@@ -114,7 +157,6 @@ CREATE TABLE sources (
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Table documents (pages)
 CREATE TABLE documents (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     source_id UUID REFERENCES sources(id) ON DELETE CASCADE,
@@ -125,7 +167,6 @@ CREATE TABLE documents (
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Table chunks (morceaux de texte + embeddings)
 CREATE TABLE chunks (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     document_id UUID REFERENCES documents(id) ON DELETE CASCADE,
@@ -136,15 +177,12 @@ CREATE TABLE chunks (
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Index pour la recherche vectorielle
 CREATE INDEX chunks_embedding_idx ON chunks 
 USING hnsw (embedding vector_cosine_ops);
 
--- Index pour éviter les doublons
 CREATE INDEX documents_hash_idx ON documents 
 USING hash (content_hash);
 
--- Fonction de recherche
 CREATE OR REPLACE FUNCTION match_chunks(
     query_embedding VECTOR(768),
     match_count INT DEFAULT 5,
@@ -176,9 +214,37 @@ END;
 $$;
 ```
 
+### 4. Setup le backend
+
+```powershell
+cd services/mcp-server
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+### 5. Setup le script d'ingestion
+
+```powershell
+cd scripts/ingest
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+playwright install chromium
+```
+
+### 6. Setup le frontend
+
+```bash
+cd apps/web
+pnpm install
+```
+
+---
+
 ## ▶️ Lancement
 
-### Terminal 1 - Backend
+**Terminal 1 — Backend**
 
 ```powershell
 cd services/mcp-server
@@ -186,28 +252,34 @@ cd services/mcp-server
 uvicorn src.main:app --reload --port 8000
 ```
 
-### Terminal 2 - Frontend
+**Terminal 2 — Frontend**
 
 ```bash
 cd apps/web
 pnpm dev
 ```
 
-Ouvre http://localhost:3000 🎉
+**Accès** : http://localhost:3000
+
+---
 
 ## 📥 Ingestion des données
 
-Pour remplir la knowledge base, modifie les URLs dans `scripts/ingest/src/config.py` :
+Avant d'utiliser l'IA, il faut remplir la knowledge base.
+
+### 1. Configure les sources
+
+Édite `scripts/ingest/src/config.py` :
 
 ```python
 SEED_URLS = [
     "https://www.superphysique.org/articles/",
     "https://www.espace-musculation.com/",
-    # Ajoute tes sites ici
+    "https://www.musculaction.com/",
 ]
 ```
 
-Puis lance :
+### 2. Lance le scraping
 
 ```powershell
 cd scripts/ingest
@@ -215,45 +287,86 @@ cd scripts/ingest
 python -m src.main
 ```
 
-Le script va :
-- Crawler jusqu'à 50 pages par domaine (configurable)
-- Respecter le robots.txt
-- Attendre 1.5s entre chaque requête
-- Chunker et embedder tout le contenu
+### Paramètres configurables
+
+| Variable | Défaut | Description |
+|----------|--------|-------------|
+| `MAX_PAGES_PER_DOMAIN` | 50 | Nombre max de pages par site |
+| `MAX_DEPTH` | 2 | Profondeur de crawl |
+| `REQUEST_DELAY_SECONDS` | 1.5 | Délai entre requêtes (respectueux) |
+| `CHUNK_SIZE_TOKENS` | 1000 | Taille des chunks |
+| `CHUNK_OVERLAP_TOKENS` | 150 | Overlap entre chunks |
+
+---
 
 ## 📁 Structure du projet
 
 ```
-ia-bot/
-├── .env                      # Config centralisée (un seul fichier!)
-├── apps/web/                 # Frontend Next.js 14
-│   ├── src/app/              # Pages (App Router)
-│   ├── src/components/       # Composants React
-│   └── src/lib/              # Client MCP + utils
-├── services/mcp-server/      # Backend FastAPI
-│   └── src/
-│       ├── mcp/              # Router JSON-RPC
-│       ├── chat/             # RAG + sessions + prompts
-│       ├── kb/               # Recherche vectorielle
-│       └── ollama/           # Client Ollama
-├── scripts/ingest/           # Pipeline d'ingestion
-│   └── src/
-│       ├── crawler.py        # Playwright
-│       ├── extractor.py      # BeautifulSoup
-│       ├── chunker.py        # tiktoken
-│       ├── embedder.py       # Ollama embeddings
-│       └── db.py             # Supabase client
-└── supabase/                 # Migrations SQL
+hephaestus/
+├── .env                          # Variables d'environnement (centralisé)
+├── .env.example                  # Template
+├── package.json                  # Config pnpm workspace
+├── pnpm-workspace.yaml
+│
+├── apps/
+│   └── web/                      # Frontend Next.js
+│       ├── src/
+│       │   ├── app/              # Pages (App Router)
+│       │   │   ├── page.tsx      # Landing page
+│       │   │   └── chat/         # Interface chat
+│       │   ├── components/       # Composants React
+│       │   └── lib/              # Client MCP, utils
+│       ├── package.json
+│       └── tailwind.config.js
+│
+├── services/
+│   └── mcp-server/               # Backend FastAPI
+│       ├── src/
+│       │   ├── main.py           # Entry point
+│       │   ├── config.py         # Settings Pydantic
+│       │   ├── models.py         # Schemas
+│       │   ├── mcp/
+│       │   │   ├── router.py     # Endpoints JSON-RPC + SSE
+│       │   │   └── tools.py      # Tools MCP
+│       │   ├── chat/
+│       │   │   ├── service.py    # Logique RAG
+│       │   │   ├── sessions.py   # Mémoire de session (TTL)
+│       │   │   └── prompts.py    # System prompt
+│       │   ├── kb/
+│       │   │   └── search.py     # Recherche vectorielle
+│       │   └── ollama/
+│       │       └── client.py     # Client Ollama
+│       └── requirements.txt
+│
+├── scripts/
+│   └── ingest/                   # Pipeline d'ingestion
+│       ├── src/
+│       │   ├── main.py           # Orchestrateur
+│       │   ├── config.py         # Config + SEED_URLS
+│       │   ├── crawler.py        # Playwright
+│       │   ├── extractor.py      # BeautifulSoup
+│       │   ├── chunker.py        # tiktoken
+│       │   ├── embedder.py       # Ollama embeddings
+│       │   ├── robots.py         # Respect robots.txt
+│       │   └── db.py             # Client Supabase
+│       └── requirements.txt
+│
+└── supabase/
+    └── migrations/               # Scripts SQL
 ```
+
+---
 
 ## 🔌 API Reference
 
 ### Health Check
+
 ```bash
 curl http://localhost:8000/health
 ```
 
 ### Lister les tools MCP
+
 ```bash
 curl -X POST http://localhost:8000/mcp \
   -H "Content-Type: application/json" \
@@ -261,6 +374,7 @@ curl -X POST http://localhost:8000/mcp \
 ```
 
 ### Recherche dans la KB
+
 ```bash
 curl -X POST http://localhost:8000/mcp \
   -H "Content-Type: application/json" \
@@ -270,12 +384,13 @@ curl -X POST http://localhost:8000/mcp \
     "method":"tools/call",
     "params":{
       "name":"search_knowledge_base",
-      "arguments":{"query":"technique squat","k":5}
+      "arguments":{"query":"squat technique","k":5}
     }
   }'
 ```
 
 ### Chat (sans streaming)
+
 ```bash
 curl -X POST http://localhost:8000/mcp \
   -H "Content-Type: application/json" \
@@ -292,29 +407,27 @@ curl -X POST http://localhost:8000/mcp \
 ```
 
 ### Chat (SSE streaming)
+
 ```bash
-curl "http://localhost:8000/mcp/stream?session_id=test-123&message=Meilleurs%20exercices%20dos"
+curl "http://localhost:8000/mcp/stream?session_id=test-123&message=Exercices%20dos"
 ```
 
-## 🧰 Stack technique
+---
 
-| Composant | Techno |
-|-----------|--------|
-| Frontend | Next.js 14, React 18, Tailwind CSS |
-| Backend | FastAPI, Python 3.11+ |
-| LLM | Ollama (Mistral chat, nomic-embed-text embeddings) |
-| BDD | Supabase PostgreSQL + pgvector |
-| Scraping | Playwright + BeautifulSoup4 |
-| Protocole | JSON-RPC over HTTP + SSE streaming |
+## ✨ Fonctionnalités
 
-## ✨ Features
+| Feature | Description |
+|---------|-------------|
+| **RAG** | Réponses basées sur une knowledge base, avec sources citées |
+| **Streaming SSE** | Affichage token par token en temps réel |
+| **Mémoire de session** | Historique de conversation côté serveur (TTL 1h) |
+| **Filtrage thématique** | Refuse les questions hors-sujet (politique, médical...) |
+| **Anti-hallucination** | Prompt strict pour citer uniquement les sources KB |
+| **100% local** | Tout tourne en local avec Ollama, pas d'API externe |
+| **Respect robots.txt** | Le crawler respecte les règles des sites |
 
-- **RAG** : Les réponses citent les sources de la knowledge base
-- **Streaming SSE** : Affichage token par token en temps réel
-- **Mémoire de session** : Historique de conversation côté serveur (TTL 1h)
-- **Filtrage thématique** : Refuse poliment les questions hors-sujet
-- **100% local** : Tout tourne sur ta machine, pas d'API externe
+---
 
-## 📄 License
+## 📄 Licence
 
-MIT
+MIT — Projet éducatif Epitech
